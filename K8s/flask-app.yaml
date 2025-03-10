@@ -21,40 +21,19 @@ spec:
             - containerPort: 5000
           env:
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: POSTGRES_USER
+              value: "admin_test"
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: POSTGRES_PASSWORD
+              value: "Admin1234"
             - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: secrets
-                  key: POSTGRES_DB
+              value: "testdb"
             - name: POSTGRES_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: configmap
-                  key: POSTGRES_HOST
+              value: ""
             - name: POSTGRES_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: configmap
-                  key: POSTGRES_PORT
+              value: "5432"
             - name: REDIS_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: configmap
-                  key: REDIS_HOST
+              value: ""
             - name: REDIS_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: configmap
-                  key: REDIS_PORT
+              value: "6379"
           volumeMounts:
             - mountPath: /data
               name: data
