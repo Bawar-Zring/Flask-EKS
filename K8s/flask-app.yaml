@@ -21,26 +21,26 @@ spec:
             - containerPort: 5000
           env:
             - name: POSTGRES_USER
-              valuefrom:
+              valueFrom:
                 secretKeyRef:
                   name: credentials
                   key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-              valuefrom:
+              valueFrom:
                 secretKeyRef:
                   name: credentials
                   key: POSTGRES_PASSWORD
             - name: POSTGRES_DB
               value: "testdb"
             - name: POSTGRES_HOST
-              valuefrom:
+              valueFrom:
                 secretKeyRef:
                   name: aws-endpoints
                   key: POSTGRES_HOST
             - name: POSTGRES_PORT
               value: "5432"
             - name: REDIS_HOST
-              valuefrom:
+              valueFrom:
                 secretKeyRef:
                   name: aws-endpoints
                   key: REDIS_HOST
