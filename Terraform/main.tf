@@ -151,12 +151,30 @@ resource "aws_route_table_association" "private-AZ2" {
 #     }
 # }
 
-resource "aws_security_group" "redis" {
+# resource "aws_security_group" "redis" {
+#   vpc_id = aws_vpc.main.id
+
+#   ingress {
+#     from_port   = 6379
+#     to_port     = 6379
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]  
+# }
+
+#     egress {
+#         from_port   = 0
+#         to_port     = 0
+#         protocol    = "-1"
+#         cidr_blocks = ["0.0.0.0/0"]
+#     }
+# }
+
+resource "aws_security_group" "postgres" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port   = 6379
-    to_port     = 6379
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]  
 }
@@ -253,26 +271,55 @@ resource "aws_security_group" "redis" {
 #   ami_type       = "AL2_x86_64"
 # }
 
-resource "aws_elasticache_subnet_group" "redis_subnet_group" {
-  name        = "redis-subnet-group"
-  subnet_ids  = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
+# resource "aws_elasticache_subnet_group" "redis_subnet_group" {
+#   name        = "redis-subnet-group"
+#   subnet_ids  = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
   
+#   tags = {
+#     Name = "redis-subnet-group"
+#   }
+# }
+
+# resource "aws_elasticache_cluster" "redis" {
+#   cluster_id           = "redis"
+#   engine               = "redis"
+#   node_type            = "cache.t4g.micro"
+#   num_cache_nodes      = 1
+#   parameter_group_name = "default.redis7"  
+#   port                 = 6379
+#   subnet_group_name    = aws_elasticache_subnet_group.redis_subnet_group.name
+#   security_group_ids   = [aws_security_group.redis.id]
+
+#   tags = {
+#     Name = "redis"
+#   }
+# }
+
+resource "aws_db_subnet_group" "postgres_subnet_group" {
+  name       = "postgres-subnet-group"
+  subnet_ids = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
+
   tags = {
-    Name = "redis-subnet-group"
+    Name = "postgres-subnet-group"
   }
 }
 
-resource "aws_elasticache_cluster" "redis" {
-  cluster_id           = "redis"
-  engine               = "redis"
-  node_type            = "cache.t4g.micro"
-  num_cache_nodes      = 1
-  parameter_group_name = "default.redis7"  
-  port                 = 6379
-  subnet_group_name    = aws_elasticache_subnet_group.redis_subnet_group.name
-  security_group_ids   = [aws_security_group.redis.id]
+resource "aws_db_instance" "postgres" {
+  allocated_storage    = 20            
+  engine               = "postgres"
+  engine_version       = "12.6"
+  instance_class       = "db.t4g.micro" 
+  parameter_group_name = "default.postgres12"
+  port                 = 5432
+  storage_type         = "gp2"          
+  db_subnet_group_name = aws_db_subnet_group.postgres_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.postgres.id]
+  username = "admin"
+  password = "root"
+
+  skip_final_snapshot = true
 
   tags = {
-    Name = "redis"
+    Name = "postgres"
   }
 }
