@@ -338,3 +338,18 @@ output "postgres_endpoint" {
 output "redis_endpoint" {
   value = aws_elasticache_cluster.redis.cache_nodes[0].address
 }
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"  # Ensure your Terraform has access to the cluster
+}
+
+resource "kubernetes_secret" "aws_endpoints" {
+  metadata {
+    name = "aws-endpoints"
+  }
+
+  data = {
+    POSTGRES_HOST = split(":", aws_db_instance.postgres.endpoint)[0]
+    REDIS_HOST    = aws_elasticache_cluster.redis.cache_nodes[0].address
+  }
+}
