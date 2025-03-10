@@ -322,6 +322,7 @@ resource "aws_db_instance" "postgres" {
   vpc_security_group_ids = [aws_security_group.postgres.id]
   username = "admin_test"
   password = "Admin1234"
+  db_name = "testdb"
 
   skip_final_snapshot = true
 
