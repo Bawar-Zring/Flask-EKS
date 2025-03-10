@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask
+  labels:
+    app: flask-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-temp
+  template:
+    metadata:
+      labels:
+        app: flask-temp
+    spec:
+      containers:
+        - name: flask
+          image: b4w4rzr1ng/my-flask-app:v1
+          ports:
+            - containerPort: 5000
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: POSTGRES_HOST
+            - name: POSTGRES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: POSTGRES_PORT
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: REDIS_PORT
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-service
+spec:
+  selector:
+    app: flask-temp
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: NodePort
