@@ -313,7 +313,7 @@ resource "aws_db_parameter_group" "postgres" {
 resource "aws_db_instance" "postgres" {
   allocated_storage    = 20            
   engine               = "postgres"
-  engine_version       = "13.4"  
+  engine_version       = "13"  
   instance_class       = "db.t4g.micro" 
   parameter_group_name = aws_db_parameter_group.postgres.name
   port                 = 5432
