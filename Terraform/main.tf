@@ -130,6 +130,13 @@ resource "aws_security_group" "eks-cluster" {
   }
 
   ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0./0"]
+    }
+
+  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -141,6 +148,24 @@ resource "aws_security_group" "eks-cluster" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+resource "aws_security_group" "redis" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+}
+
+    egress {
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
     }
 }
 
@@ -228,3 +253,26 @@ resource "aws_eks_node_group" "eks-node-group" {
   ami_type       = "AL2_x86_64"
 }
 
+resource "aws_elasticache_subnet_group" "redis_subnet_group" {
+  name        = "redis-subnet-group"
+  subnet_ids  = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
+  
+  tags = {
+    Name = "redis-subnet-group"
+  }
+}
+
+resource "aws_elasticache_cluster" "redis" {
+  cluster_id           = "redis"
+  engine               = "redis"
+  node_type            = "cache.t3.micro"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis5.0"
+  port                 = 6379
+  subnet_group_name    = aws_elasticache_subnet_group.redis_subnet_group.name
+  security_group_ids   = [aws_security_group.redis.id]  
+  
+    tags = {
+        Name = "redis"
+    }
+}
