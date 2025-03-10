@@ -307,9 +307,8 @@ resource "aws_db_subnet_group" "postgres_subnet_group" {
 resource "aws_db_instance" "postgres" {
   allocated_storage    = 20            
   engine               = "postgres"
-  engine_version       = "13.4"
   instance_class       = "db.t4g.micro" 
-  parameter_group_name = "default.postgres12"
+  parameter_group_name = "default.postgres"  
   port                 = 5432
   storage_type         = "gp2"          
   db_subnet_group_name = aws_db_subnet_group.postgres_subnet_group.name
