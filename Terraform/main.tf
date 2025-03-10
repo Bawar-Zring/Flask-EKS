@@ -313,7 +313,7 @@ resource "aws_db_instance" "postgres" {
   storage_type         = "gp2"          
   db_subnet_group_name = aws_db_subnet_group.postgres_subnet_group.name
   vpc_security_group_ids = [aws_security_group.postgres.id]
-  username = "admin"
+  username = "admin_test"
   password = "root"
 
   skip_final_snapshot = true
