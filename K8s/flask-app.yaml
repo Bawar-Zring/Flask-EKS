@@ -27,11 +27,17 @@ spec:
             - name: POSTGRES_DB
               value: "testdb"
             - name: POSTGRES_HOST
-              value: ""
+              valuefrom:
+                secretKeyRef:
+                  name: aws-endpoints
+                  key: POSTGRES_HOST
             - name: POSTGRES_PORT
               value: "5432"
             - name: REDIS_HOST
-              value: ""
+              valuefrom:
+                secretKeyRef:
+                  name: aws-endpoints
+                  key: REDIS_HOST
             - name: REDIS_PORT
               value: "6379"
           volumeMounts:
