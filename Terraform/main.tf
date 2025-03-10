@@ -307,7 +307,7 @@ resource "aws_db_subnet_group" "postgres_subnet_group" {
 resource "aws_db_instance" "postgres" {
   allocated_storage    = 20            
   engine               = "postgres"
-  engine_version       = "12.6"
+  engine_version       = "13.4"
   instance_class       = "db.t4g.micro" 
   parameter_group_name = "default.postgres12"
   port                 = 5432
