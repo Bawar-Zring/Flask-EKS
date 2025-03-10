@@ -332,7 +332,7 @@ resource "aws_db_instance" "postgres" {
 }
 
 output "postgres_endpoint" {
-  value = aws_db_instance.postgres.endpoint
+  value = split(":", aws_db_instance.postgres.endpoint)[0]
 }
 
 output "redis_endpoint" {
