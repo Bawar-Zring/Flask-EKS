@@ -119,37 +119,37 @@ resource "aws_route_table_association" "private-AZ2" {
   route_table_id = aws_route_table.private-routes.id
 }
 
-resource "aws_security_group" "eks-cluster" {
-  vpc_id = aws_vpc.main.id
+# resource "aws_security_group" "eks-cluster" {
+#   vpc_id = aws_vpc.main.id
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     from_port   = 22
+#     to_port     = 22
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  ingress {
-    from_port   = 6379
-    to_port     = 6379
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    }
+#   ingress {
+#     from_port   = 6379
+#     to_port     = 6379
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#     }
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+#   ingress {
+#     from_port   = 80
+#     to_port     = 80
+#     protocol    = "tcp"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    }
-}
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#     }
+# }
 
 resource "aws_security_group" "redis" {
   vpc_id = aws_vpc.main.id
@@ -169,89 +169,89 @@ resource "aws_security_group" "redis" {
     }
 }
 
-resource "aws_iam_role" "eks-role" {
-  name = "eks-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "eks.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
+# resource "aws_iam_role" "eks-role" {
+#   name = "eks-role"
+#   assume_role_policy = <<EOF
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": "eks.amazonaws.com"
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# EOF
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.eks-role.name
-}
+# resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+#   role       = aws_iam_role.eks-role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_service_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.eks-role.name
-}
+# resource "aws_iam_role_policy_attachment" "eks_service_policy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
+#   role       = aws_iam_role.eks-role.name
+# }
 
-resource "aws_eks_cluster" "eks-cluster" {
-  name     = "eks-cluster"
-  role_arn = aws_iam_role.eks-role.arn
-  vpc_config {
-    subnet_ids = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
-    security_group_ids = [aws_security_group.eks-cluster.id]
-  }
-}   
+# resource "aws_eks_cluster" "eks-cluster" {
+#   name     = "eks-cluster"
+#   role_arn = aws_iam_role.eks-role.arn
+#   vpc_config {
+#     subnet_ids = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
+#     security_group_ids = [aws_security_group.eks-cluster.id]
+#   }
+# }   
 
-resource "aws_iam_role" "eks-node-role" {
-  name = "eks-node-role"
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
+# resource "aws_iam_role" "eks-node-role" {
+#   name = "eks-node-role"
+#   assume_role_policy = <<EOF
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "Service": "ec2.amazonaws.com"
+#       },
+#       "Action": "sts:AssumeRole"
+#     }
+#   ]
+# }
+# EOF
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_node_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks-node-role.name
-}
+# resource "aws_iam_role_policy_attachment" "eks_node_policy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+#   role       = aws_iam_role.eks-node-role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_ecr_read_only" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks-node-role.name
-}
+# resource "aws_iam_role_policy_attachment" "eks_ecr_read_only" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+#   role       = aws_iam_role.eks-node-role.name
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks-node-role.name
-}
+# resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+#   role       = aws_iam_role.eks-node-role.name
+# }
 
-resource "aws_eks_node_group" "eks-node-group" {
-  cluster_name    = aws_eks_cluster.eks-cluster.name
-  node_group_name = "eks-node-group"
-  node_role_arn   = aws_iam_role.eks-node-role.arn
-  subnet_ids      = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
-  scaling_config {
-    desired_size = 2
-    max_size     = 2
-    min_size     = 2
-  }
-  instance_types = ["t3.medium"]
-  ami_type       = "AL2_x86_64"
-}
+# resource "aws_eks_node_group" "eks-node-group" {
+#   cluster_name    = aws_eks_cluster.eks-cluster.name
+#   node_group_name = "eks-node-group"
+#   node_role_arn   = aws_iam_role.eks-node-role.arn
+#   subnet_ids      = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
+#   scaling_config {
+#     desired_size = 2
+#     max_size     = 2
+#     min_size     = 2
+#   }
+#   instance_types = ["t3.medium"]
+#   ami_type       = "AL2_x86_64"
+# }
 
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   name        = "redis-subnet-group"
