@@ -308,11 +308,6 @@ resource "aws_db_parameter_group" "postgres" {
   family = "postgres13"
   name   = "postgres13"
   description = "postgres13"
-
-    parameter {
-        name  = "postges test"
-        value = "1"
-    }  
 }
 
 resource "aws_db_instance" "postgres" {
