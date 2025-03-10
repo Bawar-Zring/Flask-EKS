@@ -340,7 +340,7 @@ output "redis_endpoint" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"  # Ensure your Terraform has access to the cluster
+  config_path = "~/.kube/config" 
 }
 
 resource "kubernetes_secret" "aws_endpoints" {
