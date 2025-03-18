@@ -35,14 +35,14 @@ spec:
             - name: POSTGRES_HOST
               valueFrom:
                 secretKeyRef:
-                  name: aws-endpoints
+                  name: aws-endpoints-1
                   key: POSTGRES_HOST
             - name: POSTGRES_PORT
               value: "5432"
             - name: REDIS_HOST
               valueFrom:
                 secretKeyRef:
-                  name: aws-endpoints
+                  name: aws-endpoints-1
                   key: REDIS_HOST
             - name: REDIS_PORT
               value: "6379"
@@ -63,6 +63,6 @@ spec:
     app: flask-temp
   ports:
     - protocol: TCP
-      port: 5000
+      port: 5001
       targetPort: 5000
   type: ClusterIP
