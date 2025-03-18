@@ -5,10 +5,10 @@ metadata:
   namespace: default
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/subnets: 
+    alb.ingress.kubernetes.io/subnets: subnet-040260a2dbb1eafea,subnet-0a9d2054add6bcbbe
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/security-groups: 
+    alb.ingress.kubernetes.io/security-groups: sg-071941359a3dda57c,sg-0ee6c18751b5149d3
     alb.ingress.kubernetes.io/healthcheck-path: "/health"
     alb.ingress.kubernetes.io/healthcheck-port: "5000"
 spec:
@@ -16,7 +16,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /app1
+          - path: /
             pathType: Prefix
             backend:
               service:

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: flask-test
-          image: b4w4rzr1ng/flask-app-alb:alb-ingress
+          image: b4w4rzr1ng/flask-app-alb:alb-ingress2
           ports:
             - containerPort: 5000
           env:
