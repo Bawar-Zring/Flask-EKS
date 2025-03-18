@@ -367,7 +367,7 @@ provider "kubernetes" {
 
 resource "kubernetes_secret" "aws_endpoints" {
   metadata {
-    name = "aws-endpoints"
+    name = "aws-endpoints-1"
   }
 
   data = {
