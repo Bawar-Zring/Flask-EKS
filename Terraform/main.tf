@@ -271,6 +271,28 @@ resource "aws_eks_node_group" "eks-node-group" {
   ami_type       = "AL2_x86_64"
 }
 
+resource "aws_security_group" "alb_security_group" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "alb-security-group"
+  }
+}
+
 resource "aws_elasticache_subnet_group" "redis_subnet_group" {
   name        = "redis-subnet-group"
   subnet_ids  = [aws_subnet.private-AZ1.id, aws_subnet.private-AZ2.id]
