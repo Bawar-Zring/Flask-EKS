@@ -188,7 +188,7 @@ resource "aws_security_group" "postgres" {
 }
 
 resource "aws_iam_role" "eks-role" {
-  name = "eks-role"
+  name = "eks-role-1"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -225,7 +225,7 @@ resource "aws_eks_cluster" "eks-cluster" {
 }   
 
 resource "aws_iam_role" "eks-node-role" {
-  name = "eks-node-role"
+  name = "eks-node-role-1"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",

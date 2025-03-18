@@ -51,6 +51,14 @@ def health_check():
             "database": db_status if db_status is not True else "ok",
             "redis": redis_status if redis_status is not True else "ok"
         }), 500
+    
+@app.route('/', methods=['GET'])
+def default():
+    return jsonify({"message": "Hello from default page!"})
+
+@app.route('/test', methods=['GET'])
+def test():
+    return jsonify({"message": "Hello from test page!"})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
